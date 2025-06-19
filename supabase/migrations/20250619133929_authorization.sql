@@ -184,7 +184,9 @@ create index idx_payer_rules_service on payer_rules(service_code);
 
 -- Add to end of authorization.sql
 create or replace function validate_authorization_line()
-returns trigger as $$
+returns trigger 
+set search_path = ''
+as $$
 declare
   rule record;
   payer_id uuid;
