@@ -185,9 +185,28 @@ create index idx_payer_rules_service on payer_rules(service_code);
 -- Add to end of authorization.sql
 create or replace function validate_authorization_line()
 returns trigger as $$
-... [as provided above] ...
-$$ language plpgsql;
+declare
+  rule record;
+  payer_id uuid;
+begin
+  select a.payer_id into payer_id
+  from authorizations a
+  where a.id = new.authorization_id;
 
-create trigger trg_validate_authorization_line
-before insert or update on authorization_lines
-for each row execute function validate_authorization_line();
+  select * into rule
+  from payer_rules
+  where payer_id = payer_id
+    and service_code = new.service_code
+    and (modifier is null or modifier = new.modifier)
+    and (effective_date is null or effective_date <= current_date)
+  order by effective_date desc
+  limit 1;
+
+  if rule.unit_limit is not null and new.units > rule.unit_limit then
+    raise exception 'Units (% units) exceed payer limit (% units) for service %',
+      new.units, rule.unit_limit, new.service_code;
+  end if;
+
+  return new;
+end;
+$$ language plpgsql;
