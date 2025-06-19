@@ -3,7 +3,9 @@ create extension if not exists "pgcrypto";
 
 -- TRIGGER FUNCTION (for updated_at)
 create or replace function set_updated_at()
-returns trigger as $$
+returns trigger
+set search_path = ''
+as $$
 begin
   new.updated_at = now();
   return new;
