@@ -1,6 +1,7 @@
 // src/index.ts
 import express from 'express';
 import dotenv from 'dotenv';
+import clientRoutes from './routes/clients';
 
 dotenv.config();
 
@@ -17,3 +18,5 @@ app.get('/health', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
+app.use('/clients', clientRoutes);
