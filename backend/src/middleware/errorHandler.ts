@@ -3,12 +3,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { sendError } from '../utils/responses';
 
-export function errorHandler(
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+import { ErrorRequestHandler } from 'express';
+
+export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   console.error(`[ERROR] ${req.method} ${req.originalUrl}:`, err.message);
-  return sendError(res, 'Internal server error', 500);
-}
+  res.status(500).json({ success: false, error: 'Internal server error' });
+};
