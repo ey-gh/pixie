@@ -7,7 +7,9 @@ create extension if not exists "pgcrypto";
 -- GLOBAL FUNCTION: json_diff
 -- ===========================
 create or replace function json_diff(old_row jsonb, new_row jsonb)
-returns jsonb as $$
+returns jsonb
+set search_path = ''
+as $$
 declare
   result jsonb := '{}';
   key text;
@@ -29,7 +31,9 @@ $$ language plpgsql;
 -- GLOBAL FUNCTION: log_audit_event
 -- ===========================
 create or replace function log_audit_event()
-returns trigger as $$
+returns trigger
+set search_path = ''
+as $$
 declare
   change_data jsonb;
 begin
