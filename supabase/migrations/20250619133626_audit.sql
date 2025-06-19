@@ -45,7 +45,7 @@ begin
     change_data := json_diff(to_jsonb(OLD), to_jsonb(NEW));
   end if;
 
-  insert into audit_log (
+  insert into public.audit_log (
     user_id,
     action,
     table_name,
