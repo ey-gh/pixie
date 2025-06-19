@@ -1,0 +1,13 @@
+# Supabase
+.supabase/
+
+# System
+.DS_Store
+Thumbs.db
+
+# IDEs and Editors
+.vscode/
+
+# Secrets
+.env
+.env.*
