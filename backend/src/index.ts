@@ -2,6 +2,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import clientRoutes from './routes/clients';
+import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
 
@@ -20,3 +21,5 @@ app.listen(port, () => {
 });
 
 app.use('/clients', clientRoutes);
+
+app.use(errorHandler);
