@@ -127,7 +127,9 @@ create index idx_visit_flags_type on visit_flags(flag_type);
 
 -- autofill function to create attendance records for all active clients
 create or replace function autofill_attendance_for_date(p_date date default current_date)
-returns void as $$
+returns void
+set search_path = ''
+as $$
 begin
   insert into attendance_log (
     client_id, service_date, status, created_at, updated_at
