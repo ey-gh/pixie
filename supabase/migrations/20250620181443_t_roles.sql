@@ -3,6 +3,7 @@
 -- ========================================
 create table roles (
   id uuid primary key default gen_random_uuid(),
+  organization_id uuid references organizations(id) on delete cascade,
   name text not null unique,
   description text,
   created_at timestamptz default now(),

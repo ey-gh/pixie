@@ -3,6 +3,7 @@
 -- ========================================
 create table locations (
   id uuid primary key default gen_random_uuid(),
+  organization_id uuid references organizations(id) on delete cascade,
   name text not null,
   address_street text,
   address_city text,

@@ -15,3 +15,5 @@ create table lookup_values (
 create trigger trg_lookup_values_set_updated_at
 before update on lookup_values
 for each row execute function set_updated_at();
+
+create index idx_lookup_values_category on lookup_values(category);

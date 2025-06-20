@@ -14,3 +14,5 @@ create table tag_registry (
 create trigger trg_tag_registry_set_updated_at
 before update on tag_registry
 for each row execute function set_updated_at();
+
+create index idx_tag_registry_category on tag_registry(category);

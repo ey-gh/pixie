@@ -3,6 +3,7 @@
 -- ========================================
 create table permissions (
   id uuid primary key default gen_random_uuid(),
+  organization_id uuid references organizations(id) on delete cascade,
   role_id uuid references roles(id) on delete cascade,
   module_name text not null,
   action text not null, -- e.g. 'view', 'edit', 'delete'

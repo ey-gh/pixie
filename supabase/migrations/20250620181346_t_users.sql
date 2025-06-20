@@ -3,6 +3,7 @@
 -- ========================================
 create table users (
   id uuid primary key default gen_random_uuid(),
+  organization_id uuid references organizations(id) on delete cascade,
   email text not null unique,
   full_name text,
   phone text,
