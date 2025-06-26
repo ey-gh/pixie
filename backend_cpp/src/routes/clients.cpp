@@ -1,8 +1,9 @@
 // src/routes/clients.cpp
 
 #include "routes/clients.h"
-#include "validators/client_validator.h"
 #include "services/client_service.h"
+#include "dto/client_dto.h"
+#include "error-handling/error.h"
 #include "core/logger.h"
 #include "http/response_helpers.h"
 
@@ -13,58 +14,60 @@ using json = nlohmann::json;
 
 namespace pixie::routes {
 
-	void register_client_routes(crow::SimpleApp& app) {
+    void register_client_routes(crow::SimpleApp& app) {
 
-		// POST /clients
-		CROW_ROUTE(app, "/clients").methods(crow::HTTPMethod::POST)(
-			[](const crow::request& req) {
-				if (req.body.length() > 10 * 1024) {
-					return pixie::http::json_error(413, "Payload too large");
-				}
+        // POST /clients
+        CROW_ROUTE(app, "/clients").methods(crow::HTTPMethod::POST)(
+            [](const crow::request& req) {
+                try {
+                    json body = json::parse(req.body);
+                    pixie::dto::ClientCreateDTO dto = pixie::dto::ClientCreateDTO::from_json(body);
+                    auto result = pixie::services::create_client(dto);
 
-				try {
-					auto body = json::parse(req.body);
-					auto input = pixie::validators::validate_client_json(body);
-					auto result = pixie::services::create_client(input);
+                    nlohmann::json response;
+                    response["id"] = result.id;
+                    response["created_at"] = result.created_at;
 
-					crow::json::wvalue response;
-					response["id"] = result.id;
-					response["created_at"] = result.created_at;
+                    return pixie::http::json_success(201, response);
+                }
+                catch (const pixie::error::BaseError& e) {
+                    return e.to_response();
+                }
+                catch (const std::exception& e) {
+                    return pixie::error::InternalError("Unexpected server error", e.what()).to_response();
+                }
+            }
+            );
 
-					return pixie::http::json_success(201, response);
-				}
-				catch (const std::exception& e) {
-					pixie::core::log_error(std::string("[POST /clients] ") + e.what());
-					return pixie::http::json_error(400, "Invalid input or database error");
-				}
-			}
-			);
+        // GET /clients
+        CROW_ROUTE(app, "/clients").methods(crow::HTTPMethod::GET)(
+            [] {
+                try {
+                    auto results = pixie::services::get_all_clients();
 
-		// GET /clients
-		CROW_ROUTE(app, "/clients").methods(crow::HTTPMethod::GET)([] {
-			try {
-				auto results = pixie::services::get_all_clients();
+                    json response = json::array();
+                    for (const auto& r : results) {
+                        json client = {
+                            {"id", r.id},
+                            {"first_name", r.first_name},
+                            {"last_name", r.last_name},
+                            {"dob", r.dob.value_or(nullptr)},
+                            {"created_at", r.created_at}
+                        };
+                        response.push_back(std::move(client));
+                    }
 
-				crow::json::wvalue response = crow::json::wvalue::list(results.size());
-				for (size_t i = 0; i < results.size(); ++i) {
-					response[i]["id"] = results[i].id;
-					response[i]["first_name"] = results[i].first_name;
-					response[i]["last_name"] = results[i].last_name;
-					if (results[i].dob.has_value()) {
-						response[i]["dob"] = results[i].dob.value();
-					}
-					else {
-						response[i]["dob"] = nullptr;
-					}
-				}
-
-				return pixie::http::json_success(200, response);
-			}
-			catch (const std::exception& e) {
-				pixie::core::log_error(std::string("[GET /clients] ") + e.what());
-				return pixie::http::json_error(500, "Internal server error");
-			}
-			});
-	}
+                    return pixie::http::json_success(200, response);
+                }
+                catch (const pixie::error::BaseError& e) {
+                    return e.to_response();
+                }
+                catch (const std::exception& e) {
+                    return pixie::error::InternalError("Failed to fetch clients", e.what()).to_response();
+                }
+            }
+            );
+    }
 
 }
+

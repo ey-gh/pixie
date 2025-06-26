@@ -3,6 +3,7 @@
 
 #include <crow.h>
 #include <string>
+#include <nlohmann/json.hpp>
 
 namespace pixie::http {
 
@@ -10,6 +11,6 @@ namespace pixie::http {
 	crow::response json_error(int status, const std::string& message);
 
 	// Build a JSON success response from wvalue (pre-formatted Crow JSON object)
-	crow::response json_success(int status, const crow::json::wvalue& data);
+	crow::response json_success(int status, const nlohmann::json& data);
 
 } // namespace pixie::http

@@ -12,7 +12,7 @@ namespace pixie::http {
 		return crow::response{ status, err.dump() };
 	}
 
-	crow::response json_success(int status, const crow::json::wvalue& data) {
+	crow::response json_success(int status, const nlohmann::json& data) {
 		return crow::response{ status, data.dump() };
 	}
 }
