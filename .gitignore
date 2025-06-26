@@ -70,9 +70,9 @@
 # ------------------------
 
 **/data/
-**/logs/
-**/exports/
-**/errors/
+**/logs/*
+**/exports/*
+**/errors/*
 
 # Keep empty folders tracked (optional)
 !**/.gitkeep
