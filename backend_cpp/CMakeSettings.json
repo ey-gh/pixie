@@ -1,0 +1,22 @@
+{
+	"configurations": [
+		{
+			"name": "x64-Debug",
+			"generator": "Visual Studio 17 2022 Win64",
+			"configurationType": "Debug",
+			"buildRoot": "${projectDir}/out/build/${name}",
+			"installRoot": "${projectDir}/out/install/${name}",
+			"inheritEnvironments": [ "msvc_x64_x64" ],
+			"variables": [
+				{
+					"name": "CMAKE_TOOLCHAIN_FILE",
+					"value": "C:/Users/e/tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
+				},
+				{
+					"name": "VCPKG_TARGET_TRIPLET",
+					"value": "x64-windows"
+				}
+			]
+		}
+	]
+}
