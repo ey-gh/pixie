@@ -1,27 +1,22 @@
 // src/routes/dbtest.cpp
 
 #include "routes/dbtest.h"
-#include <pqxx/pqxx>
+#include "services/diagnostic_service.h"
+#include "core/logger.h"
 
 namespace pixie::routes {
-	void register_dbtest(crow::SimpleApp& app, const std::string& conn_str) {
-		// GET
-		CROW_ROUTE(app, "/dbtest").methods(crow::HTTPMethod::GET)([conn_str]() {
+
+	void register_dbtest(crow::SimpleApp& app) {
+		CROW_ROUTE(app, "/dbtest").methods(crow::HTTPMethod::GET)([] {
 			try {
-				pqxx::connection conn(conn_str);
-				pqxx::work txn(conn);
-
-				// query
-				pqxx::result r = txn.exec("SELECT version();");
-				txn.commit();
-
-				// response
-				std::string version = r[0][0].as<std::string>();
+				auto version = pixie::services::get_postgres_version();
 				return crow::response(200, "PostgreSQL version: " + version);
 			}
 			catch (const std::exception& e) {
-				return crow::response(500, std::string("DB error: ") + e.what());
+				pixie::core::log_error(std::string("[GET /dbtest] ") + e.what());
+				return crow::response(500, "Database test failed");
 			}
-		});
+			});
 	}
+
 }

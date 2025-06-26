@@ -21,7 +21,7 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 )
 
 # Define executable
-add_executable(PixieBackend ${SOURCES} "include/util/env_loader.h" "src/util/env_loader.cpp" "include/db/connection.h" "src/db/connection.cpp" "include/routes/ping.h" "src/routes/ping.cpp" "include/routes/dbtest.h" "src/routes/dbtest.cpp" "include/routes/clients.h" "src/routes/clients.cpp")
+add_executable(PixieBackend ${SOURCES} "include/util/env_loader.h" "src/util/env_loader.cpp"   "include/routes/ping.h" "src/routes/ping.cpp" "include/routes/dbtest.h" "src/routes/dbtest.cpp" "include/routes/clients.h" "src/routes/clients.cpp" "include/core/pg_pool.h" "src/core/pg_pool.cpp" "include/core/logger.h" "src/core/logger.cpp" "include/core/app.h" "src/core/app.cpp" "include/validators/client_validator.h" "src/validators/client_validator.cpp" "include/services/client_service.h" "src/services/client_service.cpp" "src/validators/common_validation.cpp" "include/services/diagnostic_service.h" "src/services/diagnostic_service.cpp" "include/http/response_helpers.h" "src/http/response_helpers.cpp")
 
 # Include local headers
 target_include_directories(PixieBackend
