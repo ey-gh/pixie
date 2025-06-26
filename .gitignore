@@ -1,0 +1,92 @@
+# ------------------------
+# OS / Editor / IDE
+# ------------------------
+
+# Windows system files
+**/Thumbs.db
+**/ehthumbs.db
+**/Desktop.ini
+
+# VS Code & Visual Studio settings
+**/.vscode/
+**/.vs/
+**/*.code-workspace
+**/*.suo
+**/*.user
+**/*.ncb
+**/*.aps
+
+# IntelliSense and DB files
+**/*.VC.db
+**/*.VC.opendb
+**/*.ipch
+**/*.log
+
+# ------------------------
+# Build Artifacts
+# ------------------------
+
+# General C++ build output
+**/*.obj
+**/*.lib
+**/*.dll
+**/*.exe
+**/*.pdb
+**/*.idb
+**/*.exp
+**/*.ilk
+
+# CMake
+**/CMakeFiles/
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/Makefile
+
+# Output folders
+**/out/
+**/build/
+**/Debug/
+**/Release/
+
+# ------------------------
+# Vcpkg Artifacts
+# ------------------------
+
+**/vcpkg_installed/
+**/vcpkg_buildtrees/
+**/vcpkg_downloads/
+**/vcpkg_packages/
+
+# ------------------------
+# Application Secrets / Config
+# ------------------------
+
+**/.env
+**/.env.*
+!**/.env.example
+**/env.dev.ps1
+
+# ------------------------
+# Project-Specific Folders
+# ------------------------
+
+**/data/
+**/logs/*
+**/exports/*
+**/errors/*
+
+# Keep empty folders tracked (optional)
+!**/.gitkeep
+
+# ------------------------
+# Testing
+# ------------------------
+
+**/test-results/
+**/coverage/
+
+# ------------------------
+# Legacy Supabase (if still exists)
+# ------------------------
+
+**/supabase/
