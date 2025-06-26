@@ -6,13 +6,13 @@
 
 #include <random>
 #include <sstream>
+#include <chrono>
+#include <iomanip>
 
 namespace pixie::middleware {
 
-    // Max request body size (1 MB)
     constexpr size_t MAX_BODY_SIZE = 1024 * 1024;
 
-    // Generate a simple UUID v4 (not cryptographically secure)
     std::string generate_uuid_v4() {
         static std::random_device rd;
         static std::mt19937 gen(rd());
@@ -33,23 +33,33 @@ namespace pixie::middleware {
         ctx.start_time = std::chrono::steady_clock::now();
         ctx.request_id = generate_uuid_v4();
 
-        // Enforce max request size
         if (req.body.length() > MAX_BODY_SIZE) {
-            res.code = 413; // Payload Too Large
+            res.code = 413;
             res.set_header("Content-Type", "application/json");
+            res.set_header("X-Request-ID", ctx.request_id);
             res.body = R"({"error": "Payload too large"})";
             res.end();
             return;
         }
 
         std::string method = crow::method_name(req.method);
-        pixie::core::log_info("[http] " + method + " " + req.raw_url + " [req_id=" + ctx.request_id + "]");
-
+        pixie::core::log_info("[http:start] " + method + " " + req.raw_url +
+            " [req_id=" + ctx.request_id + "]");
     }
 
-    void RequestLogger::after_handle(crow::request& /*req*/, crow::response& res, context& ctx) {
+    void RequestLogger::after_handle(crow::request& req, crow::response& res, context& ctx) {
+        auto end_time = std::chrono::steady_clock::now();
+        auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - ctx.start_time).count();
+
+        std::string method = crow::method_name(req.method);
+        std::string status = std::to_string(res.code);
+
         res.set_header("X-Request-ID", ctx.request_id);
         res.set_header("X-Powered-By", "Pixie");
+
+        pixie::core::log_info("[http:end]   " + method + " " + req.raw_url +
+            " [status=" + status + "] [duration=" + std::to_string(duration_ms) +
+            "ms] [req_id=" + ctx.request_id + "]");
     }
 
 } // namespace pixie::middleware
