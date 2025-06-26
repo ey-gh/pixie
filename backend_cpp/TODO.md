@@ -5,4 +5,4 @@
 
 
 ## Low Priority
-- [ ] middleware -> log ip
+- [ ] middleware -> request_logger -> capture user-agent, remote IP, request size
