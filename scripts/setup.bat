@@ -15,7 +15,7 @@ call scripts\setup_libs.bat || goto :error
 
 REM Step 2: Load environment variables from .env.database
 echo [2/4] Loading .env.database into PowerShell environment...
-powershell -ExecutionPolicy Bypass -File scripts\load.env.ps1 || goto :error
+powershell -ExecutionPolicy Bypass -File scripts\load.all.env.ps1 || goto :error
 
 REM Step 3: Configure CMake backend
 echo [3/4] Configuring CMake backend...
